@@ -19,9 +19,9 @@ if __name__ == "__main__":
         # 元データからGmailMessageオブジェクト作成
         gmail_obj = GmailMessage(msg)
         # スコア点数取得
-        score,judg = gmail_obj.calc_score()
+        gmail_obj.calc_score()
         # スコアリング判定
-        label_name = decide_label(score)
+        label_name = decide_label(gmail_obj.score)
         # 判定ラベルをGmailに追加
         label_id = label_manager.create_label(label_name)
         # メールをラベリング
