@@ -1,30 +1,73 @@
 # main.py
 import config
-from gmail.api import fetch_messages
-from scoring.score import decide_label
-from gmail.message import GmailMessage
-from gmail.label import GmailLabelManager
+from gmail.GetGmailService import get_gmail_service
+from gmail.GetMailsData import get_labeled_mails
+from gmail.GetMailsData import get_new_mails
+from scoring.WordsPreprocess import words_preprocess
+from scoring.GetTfidfFeature import get_tfidf_feature
+from scoring.GetCategoryFeature import get_category_feature
+from scoring.GetSenderFeature import get_sender_feature
+from scoring.GetNewFeature import get_new_feature
+from similarity.CalcParamSimilarity import calc_param_similarity
+from similarity.CalcTotalSimilarity import calc_total_similarity
 
 if __name__ == "__main__":
-    # Gmailの元データ取得
-    service,full_list = fetch_messages(
-        scopes=config.SCOPES,
-        limit=config.DEFAULT_FETCH_LIMIT)
-    
-    # ラベル作成用オブジェクト初期化
-    label_manager = GmailLabelManager(service)
-    
-    gmail_obj = []
-    for msg in full_list:
-        # 元データからGmailMessageオブジェクト作成
-        gmail_obj = GmailMessage(msg)
-        # スコア点数取得
-        gmail_obj.calc_score()
-        # スコアリング判定
-        label_name = decide_label(gmail_obj.score)
-        # 判定ラベルをGmailに追加
-        label_id = label_manager.create_label(label_name)
-        # メールをラベリング
-        label_manager.add_label(gmail_obj.id,label_id)
+    # ログ表示
+    print("---------- 処理を開始しました ----------")
+    # --- GmailAPI認証 ---
+    g_service = get_gmail_service(scopes=config.SCOPES)
+
+    # ===== 指定ラベルのメール情報取得 =====
+    source_data = get_labeled_mails(g_service,
+        label_names=config.LABEL_NAMES,
+        limit=config.DEFAULT_GET_LIMIT)
+
+    # 単語分割/前処理
+    processed_data = words_preprocess(source_data)
+
+    # TF-IDF特徴量の計算
+    subject_ft, body_ft, vectorizer  = get_tfidf_feature(processed_data)
+
+    # カテゴリ特徴量の計算
+    category_ft = get_category_feature(processed_data)
+
+    # 送信者特徴量の計算
+    sender_ft = get_sender_feature(processed_data,
+        domain_weight=config.DOMAIN_WEIGHT)
+
+    # ラベルごとの各特徴量を統合
+    label_features = {}
+    for label_name in subject_ft:
+        label_features[label_name] = {
+            "subject": subject_ft[label_name],
+            "body": body_ft[label_name],
+            "sender": sender_ft[label_name],
+            "category": category_ft[label_name]}
+
+    # ===== 新着メール情報取得 =====
+    source_data_new = get_new_mails(g_service)
+
+    # 前処理
+    processed_data = words_preprocess(source_data_new)
+
+    # 特徴量取得
+    new_features = get_new_feature(
+        processed_data["new"],
+        vectorizer)
+
+    # ===== 類似度計算 =====
+    similarities = calc_param_similarity(
+        label_features,
+        new_features)
+
+    # ===== 総合スコア計算 =====
+    total_scores = calc_total_similarity(
+        similarities,
+        config.FEATURE_WEIGHT)
+aaa
+
+
+# DBの使用方法の理解
+# カラム名：ラベル名として各判定メールIDを羅列する形？
 
 

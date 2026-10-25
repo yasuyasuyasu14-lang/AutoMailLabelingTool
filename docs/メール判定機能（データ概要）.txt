@@ -1,0 +1,62 @@
+メール判定機能（データ概要）
+
+各ラベルメール情報
+label_data={
+ラベルA：{
+	00:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	01:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	...
+}
+ラベルB：{
+	00:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	01:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	...
+}
+ラベルC：{
+	00:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	01:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	...
+}}
+
+
+新規メール情報
+new_mail={
+	00:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	01:{ "subject": 
+             "body": 
+             "sender": 
+             "category": }
+	...
+}
+
+自動判定処理戻り値
+judge_result ={
+ 	00:{ "ラベルA":0.3 
+             "ラベルB":0.2
+             "ラベルC":0.9}
+	01:{ "ラベルA":0.3 
+             "ラベルB":0.2
+             "ラベルC":0.9}
+	...
+}
