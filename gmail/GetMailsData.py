@@ -2,11 +2,13 @@ import base64
 from datetime import datetime, timedelta, timezone
 
 CATEGORY_MAP = {
+    "CATEGORY_PERSONAL": "メイン",
     "CATEGORY_PURCHASES": "購入",
     "CATEGORY_SOCIAL": "ソーシャル",
     "CATEGORY_UPDATES": "新着",
     "CATEGORY_FORUMS": "フォーラム",
     "CATEGORY_PROMOTIONS": "プロモーション",
+    "IMPORTANT": "重要マーク",
 }
 
 BATCH_SIZE = 100
@@ -96,11 +98,11 @@ def get_labeled_mails(g_service, label_names, limit):
                 ]
 
                 result[label_name].append({
-                    "id": task.get("id",""),
+                    "id": task.get("id", ""),
                     "subject": headers.get("subject", ""),
                     "body": _extract_body(payload),
                     "sender": headers.get("from", ""),
-                    "category": categories[0] if categories else "未分類",
+                    "category": categories if categories else ["未分類"],
                 })
 
     return result

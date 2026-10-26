@@ -29,10 +29,15 @@ def calc_param_similarity(label_features, new_features):
             )
 
             # ④ カテゴリの一致度
-            category_score = sum(
+            category_score = (
+            sum(
                 label_ft["category"].get(category, 0.0)
                 for category in mail_features["category"]
             )
+            / len(mail_features["category"])
+            if mail_features["category"]
+            else 0.0
+        )
 
             similarities[mail_id][label_name] = {
                 "subject": subject_score,

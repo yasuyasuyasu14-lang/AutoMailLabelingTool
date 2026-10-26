@@ -1,33 +1,22 @@
 # scoring/Get_category_Feature.py
-
 from collections import Counter
 
-
-def get_category_feature(preprocessed_data):
-    """Gmailカテゴリのラベル別特徴量を取得"""
-
+"""ラベル別のカテゴリ・重要マーク出現割合を取得"""
+def get_category_feature(processed_data):
     features = {}
 
-    for label_name, mails in preprocessed_data.items():
+    for label_name, mails in processed_data.items():
 
-        categories = [
-            mail.get("category", "")
-            for mail in mails
-            if mail.get("category")
-        ]
+        counter = Counter()
 
-        counter = Counter(categories)
+        for mail in mails:
+            counter.update(set(mail.get("category", [])))
 
-        total = len(categories)
-
-        features[label_name] = {}
-
-        if total == 0:
-            continue
+        total = len(mails)
 
         features[label_name] = {
             category: count / total
             for category, count in counter.items()
-        }
+        } if total else {}
 
     return features

@@ -37,13 +37,11 @@ def get_new_feature(processed_mails, vectorizer):
             }
 
         # ③ カテゴリ情報
-        category = mail.get("category", "")
-
-        category_features = (
-            {category: 1.0}
-            if category
-            else {}
-        )
+        categories = mail.get("category", [])
+        category_features = {
+            category: 1.0
+            for category in categories
+        }
 
         # ④ 特徴量を格納
         features[mail_id] = {
