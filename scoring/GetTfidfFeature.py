@@ -1,5 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+import logging
 
 def get_tfidf_feature(preprocessed_data):
     """件名・本文のラベル別平均TF-IDFを取得"""
@@ -72,5 +72,7 @@ def get_tfidf_feature(preprocessed_data):
             for term, weight in zip(feature_names, body_weights)
             if weight > 0
         }
-
+    
+    # 処理件数を表示
+    logging.info(f"TF-IDF特徴量取得：{len(document_labels)}件完了")
     return subject_features, body_features, vectorizer

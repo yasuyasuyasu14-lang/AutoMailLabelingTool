@@ -1,5 +1,6 @@
 from janome.tokenizer import Tokenizer
 import unicodedata
+import logging
 
 tokenizer = Tokenizer()
 
@@ -44,9 +45,8 @@ def _is_symbol_only(text):
         for char in text
     )
 
+"""単語分割と不要語除去"""
 def _tokenize(text):
-    """単語分割と不要語除去"""
-
     terms = []
     text = _clean_text(text).lower()
 
@@ -68,10 +68,8 @@ def _tokenize(text):
 
     return terms
 
-
+"""各ラベルのメール情報を前処理する"""
 def words_preprocess(source_data):
-    """各ラベルのメール情報を前処理する"""
-
     preprocessed_data = {}
 
     for label_name, mails in source_data.items():
@@ -89,5 +87,9 @@ def words_preprocess(source_data):
             }
 
             preprocessed_data[label_name].append(preprocessed_mail)
+
+    # 処理件数を表示
+    count = sum(len(mails) for mails in preprocessed_data.values())
+    logging.info(f"前処理：{count}件完了")
 
     return preprocessed_data

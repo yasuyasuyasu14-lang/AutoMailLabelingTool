@@ -1,3 +1,5 @@
+import logging
+
 """各パラメータの類似度から総合スコアを算出"""
 def calc_total_similarity(similarities, feature_weight):
     if abs(sum(feature_weight.values()) - 1.0) > 1e-9:
@@ -18,4 +20,6 @@ def calc_total_similarity(similarities, feature_weight):
 
             total_scores[mail_id][label_name] = total_score
 
+    # 処理件数を表示
+    logging.info(f"総合類似度算出：{len(total_scores)}件完了")
     return total_scores

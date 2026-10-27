@@ -1,6 +1,6 @@
 from collections import Counter
 from email.utils import parseaddr
-
+import logging
 
 def get_sender_feature(preprocessed_data, domain_weight=0.5):
     """メールアドレスとドメインの重み付き特徴量を取得"""
@@ -52,4 +52,7 @@ def get_sender_feature(preprocessed_data, domain_weight=0.5):
                 count / total * domain_weight
             )
 
+    # 処理件数を表示
+    count = sum(len(mails) for mails in preprocessed_data.values())
+    logging.info(f"送信者特徴量取得：{count}件完了")
     return features

@@ -21,3 +21,6 @@ FEATURE_WEIGHT = {
     "category": 0.1
     }
 
+# ラベル付与の閾値
+LABEL_THRESHOLD = 0.3
+

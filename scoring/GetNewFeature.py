@@ -1,7 +1,7 @@
 # scoring/Get_New_Feature.py
 
 from email.utils import parseaddr
-
+import logging
 
 def get_new_feature(processed_mails, vectorizer):
     """新着メールごとの特徴量を取得"""
@@ -63,4 +63,6 @@ def get_new_feature(processed_mails, vectorizer):
             "category": category_features,
         }
 
+    # 処理件数を表示
+    logging.info(f"新着メール特徴量取得：{len(features)}件完了")
     return features

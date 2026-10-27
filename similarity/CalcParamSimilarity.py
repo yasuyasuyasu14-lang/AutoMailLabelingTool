@@ -1,4 +1,5 @@
 import numpy as np
+import logging
 
 """新着メールと各ラベルのパラメータ別類似度を算出"""
 def calc_param_similarity(label_features, new_features):
@@ -46,6 +47,8 @@ def calc_param_similarity(label_features, new_features):
                 "category": category_score,
             }
 
+    # 処理件数を表示
+    logging.info(f"パラメータ別類似度算出：{len(similarities)}件完了")
     return similarities
 
 def _cosine_similarity(feature_a, feature_b):
